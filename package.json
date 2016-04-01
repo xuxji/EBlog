@@ -9,6 +9,9 @@
 	"dependencies": {
 		"express": "4.x",
 		"bootstrap": "3.x",
-        "ejs": "2.4.1"
+        "ejs": "2.4.1",
+        "mongodb": "2.1",
+        "connect-mongo": "1.1.0",
+        "express-session": "1.13.0"
 	}
 }

@@ -9,6 +9,12 @@ var bodyParser = require('body-parser');
 var routes = require('./routes/index');
 var users = require('./routes/users');
 
+var settings = require('./settings');
+
+//将会话信息存储到Mongodb中
+var session = require('express-session');
+var MongoStore = require('connect-mongo')(session);
+
 //生成一个express实例app
 var app = express();
 
@@ -33,6 +39,22 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', routes);
 app.use('/users', users);
 
+//secret 用来防止篡改 cookie，key 的值为 cookie 的名字，
+//通过设置 cookie 的 maxAge 值设定 cookie 的生存期，
+//这里我们设置 cookie 的生存期为 30 天，
+//设置它的 store 参数为 MongoStore 实例，把会话信息存储到数据库中，
+//以避免丢失
+app.use(session({
+  secret: settings.cookieSecret,
+  key: settings.db,//cookie name
+  cookie: {maxAge: 1000 * 60 * 60 * 24 * 30},//30 days
+  store: new MongoStore({
+    db: settings.db,
+    host: settings.host,
+    port: settings.port
+  })
+}));
+
 //捕获404错误，并转发到错误处理器
 app.use(function(req, res, next) {
   var err = new Error('Not Found');
@@ -47,6 +69,7 @@ if (app.get('env') === 'development') {
   app.use(function(err, req, res, next) {
     res.status(err.status || 500);
     res.render('error', {
+      title: 'error',
       message: err.message,
       error: err
     });
@@ -57,6 +80,7 @@ if (app.get('env') === 'development') {
 app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error', {
+    title: 'error',
     message: err.message,
     error: {}
   });
