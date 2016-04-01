@@ -1,0 +1,21 @@
+doctype html
+html
+  head
+    title= title
+    link(rel='stylesheet', href='/css/bootstrap.min.css')
+    link(rel='stylesheet', href='/css/bootstrap-theme.min.css')
+  body
+    .navbar.navbar-inverse.navbar-fixed-top
+      .container
+         .navbar-header
+            button.navbar-toggle
+               span.sr-only TOGGLE
+    .jumbotron
+      .container
+        h1 Hello World
+    ul.nav.nav-pills
+        li.active Home
+        li Profile
+        li Messages
+        
+    block content
